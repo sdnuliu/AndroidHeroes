@@ -12,6 +12,9 @@ public class Clock extends View {
 
     public Clock(Context context) {
         super(context);
+        // 获取宽高参数
+        mWidth = getMeasuredWidth();
+        mHeight = getMeasuredHeight();
     }
 
     public Clock(Context context, AttributeSet attrs) {
@@ -24,19 +27,50 @@ public class Clock extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        // 获取宽高参数
-        mWidth = getMeasuredWidth();
-        mHeight = getMeasuredHeight();
-        // 画外圆
-        Paint paintCircle = new Paint();
-        paintCircle.setStyle(Paint.Style.STROKE);
-        paintCircle.setAntiAlias(true);
-        paintCircle.setStrokeWidth(5);
-        canvas.drawCircle(mWidth / 2,
-                mHeight / 2, mWidth / 2, paintCircle);
+        drawCircle(canvas);
+        drawDegree(canvas);
+        drawPointer(canvas);
+        drawTime(canvas);
+    }
+
+    /**
+     * 画指针
+     *
+     * @param canvas 画布
+     */
+    private void drawTime(Canvas canvas) {
+        // 画指针
+        Paint paintHour = new Paint();
+        paintHour.setStrokeWidth(20);
+        Paint paintMinute = new Paint();
+        paintMinute.setStrokeWidth(10);
+        canvas.save();
+        canvas.translate(mWidth / 2, mHeight / 2);
+        canvas.drawLine(0, 0, 100, 100, paintHour);
+        canvas.drawLine(0, 0, 100, 200, paintMinute);
+        canvas.restore();
+    }
+
+    /**
+     * 画圆心
+     *
+     * @param canvas 画布
+     */
+    private void drawPointer(Canvas canvas) {
+        // 画圆心
+        Paint paintPointer = new Paint();
+        paintPointer.setStrokeWidth(30);
+        canvas.drawPoint(mWidth / 2, mHeight / 2, paintPointer);
+    }
+
+    /**
+     * 画刻度
+     *
+     * @param canvas 画布
+     */
+    private void drawDegree(Canvas canvas) {
         // 画刻度
         Paint painDegree = new Paint();
-        paintCircle.setStrokeWidth(3);
         for (int i = 0; i < 24; i++) {
             // 区分整点与非整点
             if (i == 0 || i == 6 || i == 12 || i == 18) {
@@ -65,19 +99,24 @@ public class Clock extends View {
             // 通过旋转画布简化坐标运算
             canvas.rotate(15, mWidth / 2, mHeight / 2);
         }
-        // 画圆心
-        Paint paintPointer = new Paint();
-        paintPointer.setStrokeWidth(30);
-        canvas.drawPoint(mWidth / 2, mHeight / 2, paintPointer);
-        // 画指针
-        Paint paintHour = new Paint();
-        paintHour.setStrokeWidth(20);
-        Paint paintMinute = new Paint();
-        paintMinute.setStrokeWidth(10);
-        canvas.save();
-        canvas.translate(mWidth / 2, mHeight / 2);
-        canvas.drawLine(0, 0, 100, 100, paintHour);
-        canvas.drawLine(0, 0, 100, 200, paintMinute);
-        canvas.restore();
+    }
+
+    /**
+     * 画外圆
+     *
+     * @param canvas 画布
+     */
+    private void drawCircle(Canvas canvas) {
+        // 画外圆
+        Paint paintCircle = new Paint();
+        //仅描边
+        paintCircle.setStyle(Paint.Style.STROKE);
+        //抗锯齿
+        paintCircle.setAntiAlias(true);
+        //边的宽度
+        paintCircle.setStrokeWidth(5);
+        //坐标点mWidth/2,mHeight/2,半径mWidth/2
+        canvas.drawCircle(mWidth / 2,
+                mHeight / 2, mWidth / 2, paintCircle);
     }
 }
